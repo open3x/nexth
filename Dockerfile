@@ -15,4 +15,4 @@ RUN npm install --production
 RUN npm install -D @types/node
 RUN npm run build
 
-CMD ["npm", "run", "start"]
+CMD ["node", "server.js"]
