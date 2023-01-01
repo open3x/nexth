@@ -1,18 +1,11 @@
-FROM node:18 as builder
+FROM public.ecr.aws/lambda/nodejs:16
 
-WORKDIR /usr/app
-COPY ./ /usr/app
-# RUN apk add git
-# RUN apk add bash
-# RUN apk update && apk add --no-cache python3 && python3 --version
-# RUN apk add pixman
-# RUN apk add libxi-dev
-# RUN apk add make
-# RUN apk add g++
+COPY ./ /var/task/
+RUN yum install -y pango-devel libXi-devel git python3 make gcc gcc-c++
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
-RUN apt update && apt install -y libxi-dev libsdl-pango-dev
 RUN npm install --production
 RUN npm install -D @types/node
-RUN npm run build
+ENV LD_LIBRARY_PATH /var/task/node_modules/canvas/build/Release
+ENV LD_PRELOAD /var/task/node_modules/canvas/build/Release/libz.so.1
 
-CMD ["node", "server.js"]
+CMD ["index.handler"]
